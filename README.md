@@ -8,7 +8,6 @@ engineers are lazy, they always forget to mask the IP address etc.),
 most files will be encrypted.
 
 Usage
-* `git clone` to download encrypted contents
-* `load.sh` to convert them into plaint-text
-* `upload.sh` to encrypt textual data
+* `download.sh` to pull data and extract it
+* `upload.sh` to encrypt local file and push onto github
 * others, operate as a normal repo
