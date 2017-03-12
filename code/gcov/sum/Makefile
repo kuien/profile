@@ -17,7 +17,7 @@ CFLAGS += -O2 -g3 -Wall -g -ggdb $(GCOVFLAGS)
 CPPFLAGS += $(CFLAGS) -std=c++11
 
 # modify frequently
-PROGRAM = sum 
+PROGRAM = sum
 TEST_APP = sum_test
 SRC_OBJS = run.o
 TEST_OBJS = sum_test.o
@@ -29,7 +29,7 @@ all: $(SRC_OBJS)
 
 # Google TEST
 gtest_filter ?= *
-GTEST_DIR = googletest/googletest
+GTEST_DIR = ../googletest/googletest
 
 INCLUDES =
 $(TEST_OBJS) gtest_main.o gtest-all.o : INCLUDES += -I$(GTEST_DIR)/ -I$(GTEST_DIR)/src -I$(GTEST_DIR)/include
@@ -70,6 +70,12 @@ coverage: test
 	@echo
 	@echo "==- coverage -=="
 	@gcov $(TEST_SRC) | grep -A 1 ".*.cpp"
+
+# it requires DA file
+genhtml:
+	lcov --capture --directory . --output-file $(PROGRAM).info --test-name $(TEST_APP) --no-external
+	genhtml -o $(PROGRAM)HTML $(PROGRAM).info
+	open $(PROGRAM)HTML/index.html
 
 clean:
 	rm -f *.o *.BAK *.d *.a *.gcov *.gcda *.gcno
