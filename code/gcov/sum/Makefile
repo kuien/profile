@@ -13,12 +13,13 @@ CXX = g++
 CC = gcc
 
 GCOVFLAGS = -fprofile-arcs -ftest-coverage
-CFLAGS += -O2 -g3 -Wall -g -ggdb $(GCOVFLAGS)
+CFLAGS += -O2 -g3 -Wall -g -ggdb
 CPPFLAGS += $(CFLAGS) -std=c++11
 
 # modify frequently
 PROGRAM = sum
 TEST_APP = sum_test
+COVERAGE_DIR = coverage
 SRC_OBJS = run.o
 TEST_OBJS = sum_test.o
 TEST_SRC = $(TEST_OBJS:.o=.cpp)
@@ -46,13 +47,15 @@ gtest_main.a : gtest_main.o gtest-all.o
 
 %.o: %.cpp
 	#$(CXX) $(CPPFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
-	$(CXX) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(GCOVFLAGS) $(INCLUDES) -c $< -o $@
 
 lint:
 	cppcheck -v --enable=warning *.cpp
 
 format:
-	clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -i *.cpp
+	@-[ -n "`command -v clang-format`" ] && \
+		clang-format -style="{BasedOnStyle: Google, IndentWidth: 4}" -i *.cpp \
+		|| echo clang-format is not found.
 
 tags:
 	-ctags -R --c++-kinds=+p --fields=+ialS --extra=+q
@@ -72,11 +75,32 @@ coverage: test
 	@gcov $(TEST_SRC) | grep -A 1 ".*.cpp"
 
 # it requires DA file
-genhtml:
+lcovhtml:
 	lcov --capture --directory . --output-file $(PROGRAM).info --test-name $(TEST_APP) --no-external
 	genhtml -o $(PROGRAM)HTML $(PROGRAM).info
 	open $(PROGRAM)HTML/index.html
 
+gcovrhtml:
+	mkdir -p $(COVERAGE_DIR)
+	gcovr --root=.  --html -o $(COVERAGE_DIR)/$(TEST_APP).html --gcov-filter="sum/*" --html-details
+	open $(COVERAGE_DIR)/$(TEST_APP).html
+
+gcovrxml:
+	mkdir -p $(COVERAGE_DIR)
+	gcovr --root=. --xml-pretty -o $(COVERAGE_DIR)/$(TEST_APP).xml
+	subl $(COVERAGE_DIR)/$(TEST_APP).xml
+
+genhtml:
+	@-[ -n "`command -v gcovr`" ] && \
+		make gcovrhtml \
+		|| echo gcovr is not found.
+
+genxml:
+	@-[ -n "`command -v gcovr`" ] && \
+		make gcovrxml \
+		|| echo gcovr is not found.
+
 clean:
 	rm -f *.o *.BAK *.d *.a *.gcov *.gcda *.gcno
+	rm -rf $(COVERAGE_DIR)
 	rm -f $(PROGRAM) $(TEST_APP)

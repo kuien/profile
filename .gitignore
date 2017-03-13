@@ -8,4 +8,5 @@ code/gcov/sum/*.gcov
 code/gcov/sum/*.gcda
 code/gcov/sum/*.gcno
 code/gcov/sum/*.info
-code/gcov/sum/*HTML
+code/gcov/sum/*.html
+code/gcov/sum/*.xml
