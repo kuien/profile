@@ -82,13 +82,13 @@ lcovhtml:
 
 gcovrhtml:
 	mkdir -p $(COVERAGE_DIR)
-	gcovr --root=.  --html -o $(COVERAGE_DIR)/$(TEST_APP).html --gcov-filter="sum/*" --html-details
-	open $(COVERAGE_DIR)/$(TEST_APP).html
+	gcovr --root=.  --html -o $(COVERAGE_DIR)/coverage.html --gcov-filter="sum/*" --html-details
+	open $(COVERAGE_DIR)/coverage.html
 
 gcovrxml:
 	mkdir -p $(COVERAGE_DIR)
-	gcovr --root=. --xml-pretty -o $(COVERAGE_DIR)/$(TEST_APP).xml
-	subl $(COVERAGE_DIR)/$(TEST_APP).xml
+	gcovr --root=. --xml-pretty -o $(COVERAGE_DIR)/coverage.xml
+	#subl $(COVERAGE_DIR)/coverage.xml
 
 genhtml:
 	@-[ -n "`command -v gcovr`" ] && \
@@ -99,6 +99,17 @@ genxml:
 	@-[ -n "`command -v gcovr`" ] && \
 		make gcovrxml \
 		|| echo gcovr is not found.
+
+diffcover_internal:
+	mkdir -p $(COVERAGE_DIR)
+	diff-cover $(COVERAGE_DIR)/coverage.xml --html-report $(COVERAGE_DIR)/report.html
+	open $(COVERAGE_DIR)/report.html
+
+diffcover:
+	@-[ -n "`command -v diff-cover`" ] && \
+		make diffcover_internal\
+		|| echo diff-cover is not found.
+
 
 clean:
 	rm -f *.o *.BAK *.d *.a *.gcov *.gcda *.gcno
