@@ -13,6 +13,10 @@ unsigned int sum(unsigned int n) {
         printf("It is my lucky number.\n");
     }
 
+    if (total == 925) {
+        printf("It isn't my lucky number.\n");
+    }
+
     return total;
 }
 

@@ -113,5 +113,7 @@ diffcover:
 
 clean:
 	rm -f *.o *.BAK *.d *.a *.gcov *.gcda *.gcno
+	rm -f *.info *.xml
+	rm -rf $(PROGRAM)HTML
 	rm -rf $(COVERAGE_DIR)
 	rm -f $(PROGRAM) $(TEST_APP)
