@@ -20,7 +20,7 @@ CPPFLAGS += $(CFLAGS) -std=c++11
 PROGRAM = sum
 TEST_APP = sum_test
 COVERAGE_DIR = coverage
-SRC_OBJS = run.o
+SRC_OBJS = run.o max.o
 TEST_OBJS = sum_test.o
 TEST_SRC = $(TEST_OBJS:.o=.cpp)
 
